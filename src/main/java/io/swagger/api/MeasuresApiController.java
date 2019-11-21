@@ -2,6 +2,8 @@ package io.swagger.api;
 
 import io.swagger.model.Magnitude;
 import io.swagger.model.Measure;
+import io.swagger.service.MeasureService;
+
 import org.threeten.bp.OffsetDateTime;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
@@ -16,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.beans.factory.annotation.Autowired;
+
 
 import javax.validation.constraints.*;
 import javax.validation.Valid;
@@ -33,6 +37,9 @@ public class MeasuresApiController implements MeasuresApi {
 
     private final HttpServletRequest request;
 
+    @Autowired
+    private MeasureService measureService;
+
     @org.springframework.beans.factory.annotation.Autowired
     public MeasuresApiController(ObjectMapper objectMapper, HttpServletRequest request) {
         this.objectMapper = objectMapper;
@@ -40,19 +47,22 @@ public class MeasuresApiController implements MeasuresApi {
     }
 
     public ResponseEntity<Void> addMeasure(@ApiParam(value = "Medida" ,required=true )  @Valid @RequestBody Measure body) {
-        String accept = request.getHeader("Accept");
-        return new ResponseEntity<Void>(HttpStatus.NOT_IMPLEMENTED);
+        log.info("addMeasure");
+
+        boolean result = (measureService.check(body) && measureService.add(body));
+        if (result) {
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<Void>(HttpStatus.FORBIDDEN);
+        }
     }
 
     public ResponseEntity<Boolean> evaluate() {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<Boolean>(objectMapper.readValue("true", Boolean.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<Boolean>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+            Boolean result = measureService.evaluate();
+            return new ResponseEntity<Boolean>(result, HttpStatus.OK);
         }
 
         return new ResponseEntity<Boolean>(HttpStatus.NOT_IMPLEMENTED);
@@ -61,12 +71,8 @@ public class MeasuresApiController implements MeasuresApi {
     public ResponseEntity<List<Measure>> findByMagnitude(@NotNull @ApiParam(value = "Magnitud de las medidas", required = true) @Valid @RequestParam(value = "magnitude", required = true) Magnitude magnitude) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<List<Measure>>(objectMapper.readValue("[ {\n  \"magnitude\" : \"spo2\",\n  \"id\" : 0,\n  \"value\" : 6,\n  \"timestamp\" : \"2000-01-23T04:56:07.000+00:00\"\n}, {\n  \"magnitude\" : \"spo2\",\n  \"id\" : 0,\n  \"value\" : 6,\n  \"timestamp\" : \"2000-01-23T04:56:07.000+00:00\"\n} ]", List.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<List<Measure>>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+            List<Measure> listMeasure = measureService.findByMagnitude(magnitude);
+            return new ResponseEntity<List<Measure>>(listMeasure, HttpStatus.OK);
         }
 
         return new ResponseEntity<List<Measure>>(HttpStatus.NOT_IMPLEMENTED);
@@ -75,12 +81,8 @@ public class MeasuresApiController implements MeasuresApi {
     public ResponseEntity<List<Measure>> findByMagnitudeAndDateRange(@NotNull @ApiParam(value = "Magnitud de las medidas", required = true) @Valid @RequestParam(value = "magnitude", required = true) Magnitude magnitude,@NotNull @ApiParam(value = "Fecha de inicio del rango temporal de las medidas", required = true) @Valid @RequestParam(value = "startDate", required = true) OffsetDateTime startDate,@NotNull @ApiParam(value = "Fecha de fin del rango temporal de las medidas", required = true) @Valid @RequestParam(value = "endDate", required = true) OffsetDateTime endDate) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
-            try {
-                return new ResponseEntity<List<Measure>>(objectMapper.readValue("[ {\n  \"magnitude\" : \"spo2\",\n  \"id\" : 0,\n  \"value\" : 6,\n  \"timestamp\" : \"2000-01-23T04:56:07.000+00:00\"\n}, {\n  \"magnitude\" : \"spo2\",\n  \"id\" : 0,\n  \"value\" : 6,\n  \"timestamp\" : \"2000-01-23T04:56:07.000+00:00\"\n} ]", List.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<List<Measure>>(HttpStatus.INTERNAL_SERVER_ERROR);
-            }
+            List<Measure> listMeasure = measureService.findByMagnitudeAndDateRange(magnitude, startDate, endDate);
+            return new ResponseEntity<List<Measure>>(listMeasure, HttpStatus.OK);
         }
 
         return new ResponseEntity<List<Measure>>(HttpStatus.NOT_IMPLEMENTED);
