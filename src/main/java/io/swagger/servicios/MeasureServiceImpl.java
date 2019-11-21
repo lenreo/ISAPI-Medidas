@@ -85,7 +85,8 @@ public class MeasureServiceImpl implements MeasureService {
 
    	@Override
     public boolean evaluate() {
-        return true;
+        double x = Math.random();
+        return (x % 2);
     }
 
    	@Override
