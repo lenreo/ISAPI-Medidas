@@ -91,12 +91,23 @@ public class MeasureServiceImpl implements MeasureService {
 
    	@Override
     public List<Measure> findByMagnitude(Magnitude magnitude) {
-        return null;
+        if (Magnitude.BPM.equals(magnitude)) {
+            return measuresBpm;
+        }
+        else {
+            return measuresO2;
+        }
     }
 
    	@Override
     public List<Measure> findByMagnitudeAndDateRange(Magnitude magnitude, OffsetDateTime startDate, OffsetDateTime endDate) {
-        return null;
+
+        if (Magnitude.BPM.equals(magnitude)) {
+            return measuresBpm;
+        }
+        else {
+            return measuresO2;
+        }
     }
 
 }
