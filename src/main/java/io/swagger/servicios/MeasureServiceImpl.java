@@ -74,6 +74,7 @@ public class MeasureServiceImpl implements MeasureService {
 
    	@Override
     public boolean add(Measure measure) {
+        log.info("add: " + measure.toString());
         return true;
     }
 
@@ -85,12 +86,14 @@ public class MeasureServiceImpl implements MeasureService {
 
    	@Override
     public boolean evaluate() {
+        log.info("evaluate");
         int x = (int) Math.random();
         return (x % 2);
     }
 
    	@Override
     public List<Measure> findByMagnitude(Magnitude magnitude) {
+        log.info("findByMagnitude: " + magnitude.toString());
         if (Magnitude.BPM.equals(magnitude)) {
             return measuresBpm;
         }
@@ -102,6 +105,7 @@ public class MeasureServiceImpl implements MeasureService {
    	@Override
     public List<Measure> findByMagnitudeAndDateRange(Magnitude magnitude, OffsetDateTime startDate, OffsetDateTime endDate) {
 
+        log.info("findByMagnitudeAndDateRange: " + magnitude.toString() + " " + startDate + " " + endDate);
         if (Magnitude.BPM.equals(magnitude)) {
             return measuresBpm;
         }
