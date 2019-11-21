@@ -23,6 +23,7 @@ public class MeasureServiceImpl implements MeasureService {
     static {
         log.info("Init static");
         measuresO2 = new ArrayList<>();
+        measuresBpm = new ArrayList<>();
 
         Measure measureO2_1 = new Measure();
         measureO2_1.setId(1L);
