@@ -2,7 +2,7 @@ package io.swagger.api;
 
 import io.swagger.model.Magnitude;
 import io.swagger.model.Measure;
-import io.swagger.service.MeasureService;
+import io.swagger.servicios.MeasureService;
 
 import org.threeten.bp.OffsetDateTime;
 import com.fasterxml.jackson.databind.ObjectMapper;
