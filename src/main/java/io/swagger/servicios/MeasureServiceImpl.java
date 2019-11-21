@@ -1,4 +1,4 @@
-package io.swagger.service;
+package io.swagger.servicios;
 
 import io.swagger.model.Measure;
 
